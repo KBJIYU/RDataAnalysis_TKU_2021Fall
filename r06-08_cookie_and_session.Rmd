@@ -1,0 +1,74 @@
+---
+title: "6-7 操作Cookie與Session"
+author: "kbjiyu"
+date: "2021/10/07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 0 關於Cookie and Session
+
+- Cookie 和 Session 究竟是什麼？有什麼差別？
+  - https://tw.alphacamp.co/blog/cookie-session-difference
+- cookie, session 與 jwt-token
+  - https://medium.com/@paulyang1234/cookie-session-%E8%88%87-jwt-token-%E5%AE%89%E5%85%A8%E6%80%A7%E5%95%8F%E9%A1%8C-8945a8a579ac
+
+## 1 操作Cookie with httr
+
+### 1.0 httr資源
+- Getting started with httr
+  - https://cran.r-project.org/web/packages/httr/vignettes/quickstart.html
+
+### 1.1 範例-ptt八卦版-若不使用 cookie
+會被擋住!
+
+```{r}
+library(httr)
+library(rvest)
+
+# ptt 八卦版
+url <- "https://www.ptt.cc/bbs/Gossiping/index.html"
+
+httr::GET(url) %>%
+  read_html() %>%
+  html_text2()
+
+```
+
+### 1.2 範例-ptt八卦版-使用cookie
+
+```{r}
+library(httr)
+library(rvest)
+
+# ptt 八卦版
+url <- "https://www.ptt.cc/bbs/Gossiping/index.html"
+
+httr::GET(url, httr::set_cookies("over18" = 1)) %>%
+  read_html() %>%
+  html_text2()
+
+
+```
+
+## 2 操作 session with rvest
+
+### 2.0 rvest html_session 資源
+- Simulate a session in web browser with rvest 1.0.2
+  - https://www.rdocumentation.org/packages/rvest/versions/1.0.2/topics/session
+  - with rvest 1.0.2
+
+### 2.1 操作範例
+
+```{r}
+s <- session("http://hadley.nz")
+
+s %>%
+  session_jump_to("hadley-wickham.jpg") %>%
+  session_jump_to("/") %>%
+  session_history()
+
+```
